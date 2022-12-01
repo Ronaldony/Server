@@ -1,23 +1,3 @@
-/*---------------------------------------------------------------
-
-	procademy MemoryPool.
-
-	¸Ş¸ğ¸® Ç® Å¬·¡½º (¿ÀºêÁ§Æ® Ç® / ÇÁ¸®¸®½ºÆ®)
-	Æ¯Á¤ µ¥ÀÌÅ¸(±¸Á¶Ã¼,Å¬·¡½º,º¯¼ö)¸¦ ÀÏÁ¤·® ÇÒ´ç ÈÄ ³ª´²¾´´Ù.
-
-	- »ç¿ë¹ı.
-
-	64 bit ±âÁØ ¼³°è. 32bit¿¡¼­´Â Á¤»ó ÀÛµ¿ÇÏÁö ¾ÊÀ½
-
-	procademy::CMemoryPool<DATA> MemPool(300, FALSE);
-	DATA *pData = MemPool.Alloc();
-
-	pData »ç¿ë
-
-	MemPool.Free(pData);
-
-
-----------------------------------------------------------------*/
 #ifndef  __MEMORY_POOL_TLS_H__
 #define  __MEMORY_POOL_TLS_H__
 //#include <windows.h>
@@ -45,13 +25,13 @@ public:
 		eALLOC_PAGE_RESERVE_SIZE = 65536
 	};
 
-	// ¿ÀºêÁ§Æ® ºí·°
+	// ì˜¤ë¸Œì íŠ¸ ë¸”ëŸ­
 	struct st_BLOCK_NODE
 	{
-		LONG64 objectCode;						// ¿ÀºêÁ§Æ® °Ë»ç ÄÚµå
-		DATA data;							// ¿ÀºêÁ§Æ® - ½ÇÁ¦ÀûÀ¸·Î »ç¿ëÀÚ¿¡°Ô ³Ñ°ÜÁà¾ßÇÏ´Â ÁÖ¼Ò
-		LONG64 overflow;						// ³ëµå ¿À¹öÇÃ·Î¿ì °Ë»ç ¿ëµµ
-		st_BLOCK_NODE* next;				// ´ÙÀ½ ³ëµå Æ÷ÀÎÅÍ
+		LONG64 objectCode;						// ì˜¤ë¸Œì íŠ¸ ê²€ì‚¬ ì½”ë“œ
+		DATA data;							// ì˜¤ë¸Œì íŠ¸ - ì‹¤ì œì ìœ¼ë¡œ ì‚¬ìš©ìì—ê²Œ ë„˜ê²¨ì¤˜ì•¼í•˜ëŠ” ì£¼ì†Œ
+		LONG64 overflow;						// ë…¸ë“œ ì˜¤ë²„í”Œë¡œìš° ê²€ì‚¬ ìš©ë„
+		st_BLOCK_NODE* next;				// ë‹¤ìŒ ë…¸ë“œ í¬ì¸í„°
 	};
 
 	struct st_CHUNK_BLOCK
@@ -73,10 +53,10 @@ private:
 	{
 	public:
 		//////////////////////////////////////////////////////////////////////////
-		// »ı¼ºÀÚ, ÆÄ±«ÀÚ.
+		// ìƒì„±ì, íŒŒê´´ì.
 		//
-		// Parameters:	(int) ÃÊ±â ºí·° °³¼ö, (bool)¸Å Alloc È£Ãâ ½Ã ¿ÀºêÁ§Æ® »ı¼ºÀÚ È£Ãâ ¿©ºÎ
-		//				(bool) Alloc ½Ã »ı¼ºÀÚ / Free ½Ã ÆÄ±«ÀÚ È£Ãâ ¿©ºÎ
+		// Parameters:	(int) ì´ˆê¸° ë¸”ëŸ­ ê°œìˆ˜, (bool)ë§¤ Alloc í˜¸ì¶œ ì‹œ ì˜¤ë¸Œì íŠ¸ ìƒì„±ì í˜¸ì¶œ ì—¬ë¶€
+		//				(bool) Alloc ì‹œ ìƒì„±ì / Free ì‹œ íŒŒê´´ì í˜¸ì¶œ ì—¬ë¶€
 		// Return:
 		//////////////////////////////////////////////////////////////////////////
 		CMemoryPool(bool bPlacementNew = false) : _iCapacity(0), _bPlacementNew(bPlacementNew), _pFreeNode(NULL){}
@@ -94,10 +74,10 @@ private:
 		}
 
 		//////////////////////////////////////////////////////////////////////////
-		// ºí·° ÇÏ³ª¸¦ ÇÒ´ç¹Ş´Â´Ù.  
+		// ë¸”ëŸ­ í•˜ë‚˜ë¥¼ í• ë‹¹ë°›ëŠ”ë‹¤.  
 		//
-		// Parameters: ¾øÀ½.
-		// Return: (DATA *) µ¥ÀÌÅ¸ ºí·° Æ÷ÀÎÅÍ.
+		// Parameters: ì—†ìŒ.
+		// Return: (DATA *) ë°ì´íƒ€ ë¸”ëŸ­ í¬ì¸í„°.
 		//////////////////////////////////////////////////////////////////////////
 		DATA* Alloc(void) 
 		{
@@ -114,9 +94,9 @@ private:
 		}
 
 		//////////////////////////////////////////////////////////////////////////
-		// »ç¿ëÁßÀÌ´ø ºí·°À» ÇØÁ¦ÇÑ´Ù.
+		// ì‚¬ìš©ì¤‘ì´ë˜ ë¸”ëŸ­ì„ í•´ì œí•œë‹¤.
 		//
-		// Parameters: (DATA *) ºí·° Æ÷ÀÎÅÍ.
+		// Parameters: (DATA *) ë¸”ëŸ­ í¬ì¸í„°.
 		// Return: (BOOL) TRUE, FALSE.
 		//////////////////////////////////////////////////////////////////////////
 		//void	Free(DATA *pData);
@@ -124,7 +104,7 @@ private:
 		{
 
 #ifndef dfMEMORYPOOLTLS_BENCHMARK
-			// ºí·° ½ºÅÃ Á¤¸®
+			// ë¸”ëŸ­ ìŠ¤íƒ ì •ë¦¬
 			if (_bPlacementNew == true)
 				((st_BLOCK_NODE*)pNode)->data.~DATA();
 #endif
@@ -136,27 +116,27 @@ private:
 
 
 		//////////////////////////////////////////////////////////////////////////
-		// ÇöÀç È®º¸ µÈ ºí·° °³¼ö¸¦ ¾ò´Â´Ù. (¸Ş¸ğ¸®Ç® ³»ºÎÀÇ ÀüÃ¼ °³¼ö)
+		// í˜„ì¬ í™•ë³´ ëœ ë¸”ëŸ­ ê°œìˆ˜ë¥¼ ì–»ëŠ”ë‹¤. (ë©”ëª¨ë¦¬í’€ ë‚´ë¶€ì˜ ì „ì²´ ê°œìˆ˜)
 		//
-		// Parameters: ¾øÀ½.
-		// Return: (int) ¸Ş¸ğ¸® Ç® ³»ºÎ ÀüÃ¼ °³¼ö
+		// Parameters: ì—†ìŒ.
+		// Return: (int) ë©”ëª¨ë¦¬ í’€ ë‚´ë¶€ ì „ì²´ ê°œìˆ˜
 		//////////////////////////////////////////////////////////////////////////
 		int		GetCapacityCount(void) { return _iCapacity; }
 
 
 		//////////////////////////////////////////////////////////////////////////
-		// ÃÖ´ë ÇÒ´ç ºí·° °³¼ö¸¦ Áõ°¡½ÃÅ²´Ù.
+		// ìµœëŒ€ í• ë‹¹ ë¸”ëŸ­ ê°œìˆ˜ë¥¼ ì¦ê°€ì‹œí‚¨ë‹¤.
 		//
-		// Parameters: ¾øÀ½
-		// Return: ¾øÀ½
+		// Parameters: ì—†ìŒ
+		// Return: ì—†ìŒ
 		//////////////////////////////////////////////////////////////////////////
 		//void		Resize(void);
 
 		//////////////////////////////////////////////////////////////////////////
-		// ¸Ş¸ğ¸® Ã»Å©¸¦ Àü´Ş ¹Ş´Â´Ù.
+		// ë©”ëª¨ë¦¬ ì²­í¬ë¥¼ ì „ë‹¬ ë°›ëŠ”ë‹¤.
 		//
-		// Parameters: ¾øÀ½.
-		// Return: (int) ¸Ş¸ğ¸® Ç® ³»ºÎ ÀüÃ¼ °³¼ö
+		// Parameters: ì—†ìŒ.
+		// Return: (int) ë©”ëª¨ë¦¬ í’€ ë‚´ë¶€ ì „ì²´ ê°œìˆ˜
 		//////////////////////////////////////////////////////////////////////////
 		void GetBlockChunk(void* pBlockChunk, int iChunkSize)
 		{
@@ -166,74 +146,74 @@ private:
 
 
 	private:
-		// ½ºÅÃ ¹æ½ÄÀ¸·Î ¹İÈ¯µÈ (¹Ì»ç¿ë) ¿ÀºêÁ§Æ® ºí·°À» °ü¸®.
+		// ìŠ¤íƒ ë°©ì‹ìœ¼ë¡œ ë°˜í™˜ëœ (ë¯¸ì‚¬ìš©) ì˜¤ë¸Œì íŠ¸ ë¸”ëŸ­ì„ ê´€ë¦¬.
 
-		int				_iCapacity;		// ÇöÀç È®º¸µÈ ºí·° °³¼ö
-		bool			_bPlacementNew;	// Alloc, Free ½Ã ¸Å¹ø »ı¼ºÀÚ ¹× ¼Ò¸êÀÚ È£Ãâ ¿©ºÎ
-		st_BLOCK_NODE* _pFreeNode;		// ½ºÅÃ Top ¿ÀºêÁ§Æ® ºí·°
+		int				_iCapacity;		// í˜„ì¬ í™•ë³´ëœ ë¸”ëŸ­ ê°œìˆ˜
+		bool			_bPlacementNew;	// Alloc, Free ì‹œ ë§¤ë²ˆ ìƒì„±ì ë° ì†Œë©¸ì í˜¸ì¶œ ì—¬ë¶€
+		st_BLOCK_NODE* _pFreeNode;		// ìŠ¤íƒ Top ì˜¤ë¸Œì íŠ¸ ë¸”ëŸ­
 	};
 
 public:
 	//////////////////////////////////////////////////////////////////////////
-	// »ı¼ºÀÚ, ÆÄ±«ÀÚ.
+	// ìƒì„±ì, íŒŒê´´ì.
 	//
-	// Parameters:	(int) ÃÊ±â ºí·° °³¼ö, (bool)¸Å Alloc È£Ãâ ½Ã ¿ÀºêÁ§Æ® »ı¼ºÀÚ È£Ãâ ¿©ºÎ
-	//				(bool) Alloc ½Ã »ı¼ºÀÚ / Free ½Ã ÆÄ±«ÀÚ È£Ãâ ¿©ºÎ
+	// Parameters:	(int) ì´ˆê¸° ë¸”ëŸ­ ê°œìˆ˜, (bool)ë§¤ Alloc í˜¸ì¶œ ì‹œ ì˜¤ë¸Œì íŠ¸ ìƒì„±ì í˜¸ì¶œ ì—¬ë¶€
+	//				(bool) Alloc ì‹œ ìƒì„±ì / Free ì‹œ íŒŒê´´ì í˜¸ì¶œ ì—¬ë¶€
 	// Return:
 	//////////////////////////////////////////////////////////////////////////
 	CMemoryPoolTLS(bool bPlacementNew = false);
 	virtual	~CMemoryPoolTLS();
 
 	//////////////////////////////////////////////////////////////////////////
-	// ºí·° ÇÏ³ª¸¦ ÇÒ´ç¹Ş´Â´Ù.  
+	// ë¸”ëŸ­ í•˜ë‚˜ë¥¼ í• ë‹¹ë°›ëŠ”ë‹¤.  
 	//
-	// Parameters: ¾øÀ½.
-	// Return: (DATA *) µ¥ÀÌÅ¸ ºí·° Æ÷ÀÎÅÍ.
+	// Parameters: ì—†ìŒ.
+	// Return: (DATA *) ë°ì´íƒ€ ë¸”ëŸ­ í¬ì¸í„°.
 	//////////////////////////////////////////////////////////////////////////
 	DATA* Alloc(void);
 
 	//////////////////////////////////////////////////////////////////////////
-	// »ç¿ëÁßÀÌ´ø ºí·°À» ÇØÁ¦ÇÑ´Ù.
+	// ì‚¬ìš©ì¤‘ì´ë˜ ë¸”ëŸ­ì„ í•´ì œí•œë‹¤.
 	//
-	// Parameters: (DATA *) ºí·° Æ÷ÀÎÅÍ.
+	// Parameters: (DATA *) ë¸”ëŸ­ í¬ì¸í„°.
 	// Return: (BOOL) TRUE, FALSE.
 	//////////////////////////////////////////////////////////////////////////
 	bool	Free(DATA* pData);
 
 	//////////////////////////////////////////////////////////////////////////
-	// ¸Ş¸ğ¸® Ã»Å©¸¦ ÀçÇÒ´çÇÑ´Ù.
+	// ë©”ëª¨ë¦¬ ì²­í¬ë¥¼ ì¬í• ë‹¹í•œë‹¤.
 	//
-	// Parameters: (DATA *) ºí·° Æ÷ÀÎÅÍ.
+	// Parameters: (DATA *) ë¸”ëŸ­ í¬ì¸í„°.
 	// Return: (BOOL) TRUE, FALSE.
 	//////////////////////////////////////////////////////////////////////////
 	void	Resize(st_POOL_INFO*);
 
 	//////////////////////////////////////////////////////////////////////////
-	// ÇöÀç Ç®¿¡¼­ ¿ÜºÎ·Î ÇÒ´çµÈ ³ëµå °³¼ö
+	// í˜„ì¬ í’€ì—ì„œ ì™¸ë¶€ë¡œ í• ë‹¹ëœ ë…¸ë“œ ê°œìˆ˜
 	//
-	// Parameters: ¾øÀ½
-	// Return: (LONG64)ÇÒ´çµÈ °³¼ö
+	// Parameters: ì—†ìŒ
+	// Return: (LONG64)í• ë‹¹ëœ ê°œìˆ˜
 	//////////////////////////////////////////////////////////////////////////
 	LONG64	GetAllocCount(void) { return _llCountOfAlloc; }
 	LONG64	GetChunkAllocCount(void) { return _llCountOfAllocChunk; }
 
 private:
-	// ½ºÅÃ ¹æ½ÄÀ¸·Î ¹İÈ¯µÈ (¹Ì»ç¿ë) ¿ÀºêÁ§Æ® ºí·°À» °ü¸®.
-	CLockFreeMemoryPool<st_CHUNK_BLOCK>		_ChunkPool;	// Ã»Å© Ç®
+	// ìŠ¤íƒ ë°©ì‹ìœ¼ë¡œ ë°˜í™˜ëœ (ë¯¸ì‚¬ìš©) ì˜¤ë¸Œì íŠ¸ ë¸”ëŸ­ì„ ê´€ë¦¬.
+	CLockFreeMemoryPool<st_CHUNK_BLOCK>		_ChunkPool;	// ì²­í¬ í’€
 
 	st_CHUNK_BLOCK* alignas(64) _pFreeChunk;
 
-	bool alignas(64)		_bPlacementNew;		// Alloc, Free ½Ã ¸Å¹ø »ı¼ºÀÚ ¹× ¼Ò¸êÀÚ È£Ãâ ¿©ºÎ
+	bool alignas(64)		_bPlacementNew;		// Alloc, Free ì‹œ ë§¤ë²ˆ ìƒì„±ì ë° ì†Œë©¸ì í˜¸ì¶œ ì—¬ë¶€
 	inline static DWORD		_dwPoolTlsNum;
 	inline static DWORD		_dwAllocAddrTlsNum;
 	inline static DWORD		_dwAllocSizeTlsNum;
 	int						_PageCommitCount;
-	int						_iAddrDistance;		// ³ëµå ºí·°ÀÇ DATA À§Ä¡¿Í ³ëµå ºí·°ÀÇ ÁÖ¼Ò Â÷ÀÌ
+	int						_iAddrDistance;		// ë…¸ë“œ ë¸”ëŸ­ì˜ DATA ìœ„ì¹˜ì™€ ë…¸ë“œ ë¸”ëŸ­ì˜ ì£¼ì†Œ ì°¨ì´
 	
 	int						_iChunkPoolAllocSize;
 
 #ifdef dfMEMORYPOOLTLS_MONITOR
-	// ¸ğ´ÏÅÍ¸µ Á¤º¸
+	// ëª¨ë‹ˆí„°ë§ ì •ë³´
 	LONG64 alignas(64)	_llCountOfAlloc;
 	LONG64				_llCountOfAllocChunk;
 #endif
@@ -243,20 +223,20 @@ template<class DATA>
 CMemoryPoolTLS<DATA>::CMemoryPoolTLS(bool bPlacementNew)
 	:_bPlacementNew(bPlacementNew), _pFreeChunk(NULL)
 {
-	// ¸Ş¸ğ¸® ºí·°¿¡¼­ ½ÇÁ¦ µ¥ÀÌÅÍ±îÁöÀÇ ÁÖ¼Ò °Å¸®
+	// ë©”ëª¨ë¦¬ ë¸”ëŸ­ì—ì„œ ì‹¤ì œ ë°ì´í„°ê¹Œì§€ì˜ ì£¼ì†Œ ê±°ë¦¬
 	st_BLOCK_NODE block;
 	_iAddrDistance = (int)(((LONG64)(&block.data) - (LONG64)&block) / 4);
 	_iAddrDistance = (int)(dfADDRESS_MAX_VALUE - (LONG64)((_iAddrDistance - 1)));
 
-	// TLS ¹øÈ£ ÃÊ±âÈ­
+	// TLS ë²ˆí˜¸ ì´ˆê¸°í™”
 	_dwPoolTlsNum = TlsAlloc();
 	_dwAllocAddrTlsNum = TlsAlloc();
 	_dwAllocSizeTlsNum = TlsAlloc();
 
-	// ÇÒ´ç ¹ë·±½º
+	// í• ë‹¹ ë°¸ëŸ°ìŠ¤
 	_iChunkPoolAllocSize = (eSYSTEM_PAGE_SIZE * 4) / sizeof(st_BLOCK_NODE);
 
-	// À§ ¿¹¾àµÇ´Â Å©±âÀÇ ÆäÀÌÁö °³¼ö
+	// ìœ„ ì˜ˆì•½ë˜ëŠ” í¬ê¸°ì˜ í˜ì´ì§€ ê°œìˆ˜
 	_PageCommitCount = (sizeof(st_BLOCK_NODE) * _iChunkPoolAllocSize) / eSYSTEM_PAGE_SIZE;
 	if (sizeof(st_BLOCK_NODE) * _iChunkPoolAllocSize != eSYSTEM_PAGE_SIZE)
 		_PageCommitCount++;
@@ -271,7 +251,7 @@ CMemoryPoolTLS<DATA>::CMemoryPoolTLS(bool bPlacementNew)
 template<class DATA>
 CMemoryPoolTLS<DATA>::~CMemoryPoolTLS()
 {
-	// Ã³¸® º¸·ù
+	// ì²˜ë¦¬ ë³´ë¥˜
 	//st_BLOCK_NODE* pDeleteNode;
 	//st_BLOCK_NODE* pFreeChunk = (st_BLOCK_NODE*)((ULONG64)_pFreeChunk & dfLOCKFREE_MEMORYPOOL_MASKING_ADDR);
 
@@ -284,10 +264,10 @@ CMemoryPoolTLS<DATA>::~CMemoryPoolTLS()
 }
 
 //////////////////////////////////////////////////////////////////////////
-// ºí·° ÇÏ³ª¸¦ ÇÒ´ç¹Ş´Â´Ù.
+// ë¸”ëŸ­ í•˜ë‚˜ë¥¼ í• ë‹¹ë°›ëŠ”ë‹¤.
 //
-// Parameters: ¾øÀ½.
-// Return: (DATA *) µ¥ÀÌÅ¸ ºí·° Æ÷ÀÎÅÍ.
+// Parameters: ì—†ìŒ.
+// Return: (DATA *) ë°ì´íƒ€ ë¸”ëŸ­ í¬ì¸í„°.
 //////////////////////////////////////////////////////////////////////////
 template<class DATA>
 DATA* CMemoryPoolTLS<DATA>::Alloc(void)
@@ -300,21 +280,30 @@ DATA* CMemoryPoolTLS<DATA>::Alloc(void)
 
 	if (0 == pThreadPool)
 	{
-		// Pool ÃÖÃÊ »ı¼º
+		// Pool ìµœì´ˆ ìƒì„±
 		pThreadPool = (st_POOL_INFO*)_aligned_malloc(sizeof(st_POOL_INFO), 64);
 		new (pThreadPool) st_POOL_INFO;
 		if (!TlsSetValue(_dwPoolTlsNum, pThreadPool))
 			return NULL;
 
-		// ½º·¹µå Ç® ¿ä¼Ò ÃÊ±âÈ­
+		// ìŠ¤ë ˆë“œ í’€ ìš”ì†Œ ì´ˆê¸°í™”
 		pThreadPool->ChunkCapacity = 0;
 		pThreadPool->PoolChunk = _ChunkPool.Alloc();
 	}
 
 	DATA* retAddr;
 
-	// Pool Chunk Capacity °Ë»ç ¹× ÇÒ´ç
-	// ¸¸¾à 0 ÀÌ»óÀÌ¸é Chunk¿¡¼­ ¸Ş¸ğ¸® ÇÒ´ç
+	// Pool Capacity ê²€ì‚¬ ë° í• ë‹¹
+	// ë§Œì•½ 0 ì´ìƒì´ë©´ Poolì—ì„œ ë©”ëª¨ë¦¬ í• ë‹¹
+	if (pThreadPool->Pool.GetCapacityCount())
+	{
+		//retAddr = pThreadPool->Pool.Alloc();
+
+		return pThreadPool->Pool.Alloc();
+	}
+
+	// Pool Chunk Capacity ê²€ì‚¬ ë° í• ë‹¹
+	// ë§Œì•½ 0 ì´ìƒì´ë©´ Chunkì—ì„œ ë©”ëª¨ë¦¬ í• ë‹¹
 	if (pThreadPool->ChunkCapacity)
 	{
 		retAddr = &pThreadPool->PoolChunk->node->data;
@@ -323,16 +312,6 @@ DATA* CMemoryPoolTLS<DATA>::Alloc(void)
 
 		return retAddr;
 	}
-
-	// Pool Capacity °Ë»ç ¹× ÇÒ´ç
-	// ¸¸¾à 0 ÀÌ»óÀÌ¸é Pool¿¡¼­ ¸Ş¸ğ¸® ÇÒ´ç
-	if (pThreadPool->Pool.GetCapacityCount())
-	{
-		//retAddr = pThreadPool->Pool.Alloc();
-
-		return pThreadPool->Pool.Alloc();
-	}
-
 
 	while (1)
 	{
@@ -346,7 +325,7 @@ DATA* CMemoryPoolTLS<DATA>::Alloc(void)
 			break;
 		}
 
-		// ABA ¹®Á¦¸¦ ÇØ°áÇÏ±â À§ÇÏ¿© Top ÁÖ¼Ò °ª ºó Ä­¿¡ Count °ªÀ» °è»ê 
+		// ABA ë¬¸ì œë¥¼ í•´ê²°í•˜ê¸° ìœ„í•˜ì—¬ Top ì£¼ì†Œ ê°’ ë¹ˆ ì¹¸ì— Count ê°’ì„ ê³„ì‚° 
 		st_CHUNK_BLOCK* next = (st_CHUNK_BLOCK*)((((ULONG64)pTempChunk + dfLOCKFREE_MEMORYPOOL_MASKING_COUNT_ADD) & dfLOCKFREE_MEMORYPOOL_MASKING_COUNT) | (ULONG64)(pFreeChunk->nextChunk));
 
 		if (pTempChunk == (st_CHUNK_BLOCK*)InterlockedCompareExchange((unsigned long long*) & _pFreeChunk, (unsigned long long)next, (unsigned long long)pTempChunk))
@@ -362,9 +341,9 @@ DATA* CMemoryPoolTLS<DATA>::Alloc(void)
 }
 
 //////////////////////////////////////////////////////////////////////////
-// »ç¿ëÁßÀÌ´ø ºí·°À» ÇØÁ¦ÇÑ´Ù.
+// ì‚¬ìš©ì¤‘ì´ë˜ ë¸”ëŸ­ì„ í•´ì œí•œë‹¤.
 //
-// Parameters: (DATA *) ºí·° Æ÷ÀÎÅÍ.
+// Parameters: (DATA *) ë¸”ëŸ­ í¬ì¸í„°.
 // Return: (BOOL) TRUE, FALSE.
 //////////////////////////////////////////////////////////////////////////
 template<class DATA>
@@ -378,7 +357,7 @@ bool CMemoryPoolTLS<DATA>::Free(DATA* pData)
 	st_BLOCK_NODE* pNode = (st_BLOCK_NODE*)((int*)pData + _iAddrDistance);
 
 #ifndef dfMEMORYPOOLTLS_BENCHMARK
-	// ¿ÀºêÁ§Æ® ºí·° °Ë»ç
+	// ì˜¤ë¸Œì íŠ¸ ë¸”ëŸ­ ê²€ì‚¬
 	if (pNode->objectCode != (int)pNode)
 		return false;
 
@@ -390,19 +369,19 @@ bool CMemoryPoolTLS<DATA>::Free(DATA* pData)
 
 	if (0 == pThreadPool)
 	{
-		// Pool ÃÖÃÊ »ı¼º
+		// Pool ìµœì´ˆ ìƒì„±
 		pThreadPool = (st_POOL_INFO*)_aligned_malloc(sizeof(st_POOL_INFO), 64);
 		new (pThreadPool) st_POOL_INFO;
 		if (!TlsSetValue(_dwPoolTlsNum, pThreadPool))
 			return NULL;
 
-		// ½º·¹µå Ç® ¿ä¼Ò ÃÊ±âÈ­
+		// ìŠ¤ë ˆë“œ í’€ ìš”ì†Œ ì´ˆê¸°í™”
 		pThreadPool->ChunkCapacity = 0;
 		pThreadPool->PoolChunk = _ChunkPool.Alloc();
 	}
 
-	// Pool Capacity °Ë»ç ¹× ÇÒ´ç
-	// ¸¸¾à 0 ÀÌ»óÀÌ¸é Pool¿¡¼­ ¸Ş¸ğ¸® ÇÒ´ç
+	// Pool Capacity ê²€ì‚¬ ë° í• ë‹¹
+	// ë§Œì•½ 0 ì´ìƒì´ë©´ Poolì—ì„œ ë©”ëª¨ë¦¬ í• ë‹¹
 	if (pThreadPool->Pool.GetCapacityCount() < ePOOL_CHUNK_SIZE)
 	{
 		pThreadPool->Pool.Free(pNode);
@@ -410,8 +389,8 @@ bool CMemoryPoolTLS<DATA>::Free(DATA* pData)
 		return true;
 	}
 
-	// Pool Chunk Capacity °Ë»ç ¹× ÇÒ´ç
-	// ¸¸¾à 0 ÀÌ»óÀÌ¸é Chunk¿¡¼­ ¸Ş¸ğ¸® ÇÒ´ç
+	// Pool Chunk Capacity ê²€ì‚¬ ë° í• ë‹¹
+	// ë§Œì•½ 0 ì´ìƒì´ë©´ Chunkì—ì„œ ë©”ëª¨ë¦¬ í• ë‹¹
 	if (pThreadPool->ChunkCapacity < ePOOL_CHUNK_SIZE)
 	{
 		pThreadPool->ChunkCapacity++;
@@ -421,7 +400,7 @@ bool CMemoryPoolTLS<DATA>::Free(DATA* pData)
 		return true;
 	}
 
-	// Ã»Å© Ç® EnQ
+	// ì²­í¬ í’€ EnQ
 	st_CHUNK_BLOCK* pChunk = _ChunkPool.Alloc();
 	pChunk->node = pThreadPool->PoolChunk->node;
 	pChunk->nextChunk = NULL;
@@ -433,7 +412,7 @@ bool CMemoryPoolTLS<DATA>::Free(DATA* pData)
 
 		pChunk->nextChunk = pFreeChunk;
 
-		// ABA ¹®Á¦¸¦ ÇØ°áÇÏ±â À§ÇÏ¿© Top ÁÖ¼Ò °ª ºó Ä­¿¡ Count °ªÀ» °è»ê
+		// ABA ë¬¸ì œë¥¼ í•´ê²°í•˜ê¸° ìœ„í•˜ì—¬ Top ì£¼ì†Œ ê°’ ë¹ˆ ì¹¸ì— Count ê°’ì„ ê³„ì‚°
 		st_CHUNK_BLOCK* pNewTop = (st_CHUNK_BLOCK*)((((ULONG64)pTempChunk + dfLOCKFREE_MEMORYPOOL_MASKING_COUNT_ADD) & dfLOCKFREE_MEMORYPOOL_MASKING_COUNT) | (ULONG64)(pChunk));
 
 		if (pTempChunk == (st_CHUNK_BLOCK*)InterlockedCompareExchange((unsigned long long*) & _pFreeChunk, (unsigned long long)pNewTop, (unsigned long long)pTempChunk))
@@ -457,12 +436,12 @@ void CMemoryPoolTLS<DATA>::Resize(st_POOL_INFO* pPool)
 	int* pBaseAddr = (int*)TlsGetValue(_dwAllocAddrTlsNum);
 	int* pBlockAddrBase = pBaseAddr;
 
-	// µ¿Àû ¸Ş¸ğ¸® ¸®Àúºê ¹× Ä¿¹Ô
+	// ë™ì  ë©”ëª¨ë¦¬ ë¦¬ì €ë¸Œ ë° ì»¤ë°‹
 	if ((NULL == pBaseAddr)	
 		|| ((LONG64)eALLOC_PAGE_RESERVE_SIZE - ldAllocSize < (LONG64)(sizeof(st_BLOCK_NODE) * _iChunkPoolAllocSize)))
 	{
-		// Condition 1: ÃÖÃÊ ¸Ş¸ğ¸® ¿¹¾à
-		// Condition 2: ¿¹¾àÇÑ 64KB °ø°£ÀÌ ÇÒ´çÅ©±â¸¸Å­ÀÇ °ø°£ÀÌ ¾ø´Â °æ¿ì
+		// Condition 1: ìµœì´ˆ ë©”ëª¨ë¦¬ ì˜ˆì•½
+		// Condition 2: ì˜ˆì•½í•œ 64KB ê³µê°„ì´ í• ë‹¹í¬ê¸°ë§Œí¼ì˜ ê³µê°„ì´ ì—†ëŠ” ê²½ìš°
 
 		pBlockAddrBase = (int*)VirtualAlloc(NULL, eALLOC_PAGE_RESERVE_SIZE, MEM_RESERVE, PAGE_NOACCESS);
 		pBaseAddr = pBlockAddrBase;
@@ -471,7 +450,7 @@ void CMemoryPoolTLS<DATA>::Resize(st_POOL_INFO* pPool)
 
 	if ((NULL == pBlockAddrBase) || (ERROR_INVALID_ADDRESS == (LONG64)pBlockAddrBase))
 	{
-		// µ¿Àû ¸Ş¸ğ¸® ÇÒ´ç ½ÇÆĞ
+		// ë™ì  ë©”ëª¨ë¦¬ í• ë‹¹ ì‹¤íŒ¨
 		int* exit = NULL;
 		*exit = 0;
 		return;
@@ -479,15 +458,15 @@ void CMemoryPoolTLS<DATA>::Resize(st_POOL_INFO* pPool)
 
 	pBlockAddrBase = (int*)VirtualAlloc(pBaseAddr, sizeof(st_BLOCK_NODE) * _iChunkPoolAllocSize, MEM_COMMIT, PAGE_READWRITE);
 
-	// ÇÒ´çµÈ ÆäÀÌÁö »çÀÌÁî ±¸ÇÏ±â
+	// í• ë‹¹ëœ í˜ì´ì§€ ì‚¬ì´ì¦ˆ êµ¬í•˜ê¸°
 	pBaseAddr = pBaseAddr + (eSYSTEM_PAGE_SIZE / sizeof(int)) * _PageCommitCount;
 	ldAllocSize += _PageCommitCount * eSYSTEM_PAGE_SIZE;
 
-	// TLS °»½Å
+	// TLS ê°±ì‹ 
 	TlsSetValue(_dwAllocAddrTlsNum, pBaseAddr);
 	TlsSetValue(_dwAllocSizeTlsNum, (void*)ldAllocSize);
 
-	// ¿ÀºêÁ§Æ® ºí·° ÇÒ´ç
+	// ì˜¤ë¸Œì íŠ¸ ë¸”ëŸ­ í• ë‹¹
 	st_BLOCK_NODE* pBlock = (st_BLOCK_NODE*)pBlockAddrBase;
 	st_BLOCK_NODE* pNewBlock;
 
@@ -513,7 +492,7 @@ void CMemoryPoolTLS<DATA>::Resize(st_POOL_INFO* pPool)
 		pBlock->next = nullptr;
 		pBlock->overflow = (LONG64)pBlock;
 
-		// placement new·Î »ı¼ºÀÚ È£Ãâ
+		// placement newë¡œ ìƒì„±ì í˜¸ì¶œ
 		new (&pBlock->data) DATA;
 
 		for (int cnt = 1; cnt < _iChunkPoolAllocSize; cnt++)
@@ -529,7 +508,7 @@ void CMemoryPoolTLS<DATA>::Resize(st_POOL_INFO* pPool)
 		}
 	}
 
-	// ÇØ´ç Pool¿¡°Ô ¸Ş¸ğ¸® Ã»Å© Àü´Ş
+	// í•´ë‹¹ Poolì—ê²Œ ë©”ëª¨ë¦¬ ì²­í¬ ì „ë‹¬
 	pPool->Pool.GetBlockChunk(pBlock, _iChunkPoolAllocSize);
 #ifdef dfMEMORYPOOLTLS_MONITOR
 	InterlockedAdd64(&_llCountOfAllocChunk, _iChunkPoolAllocSize);
