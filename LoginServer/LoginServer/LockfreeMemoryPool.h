@@ -1,23 +1,3 @@
-/*---------------------------------------------------------------
-
-	procademy MemoryPool.
-
-	¸Ş¸ğ¸® Ç® Å¬·¡½º (¿ÀºêÁ§Æ® Ç® / ÇÁ¸®¸®½ºÆ®)
-	Æ¯Á¤ µ¥ÀÌÅ¸(±¸Á¶Ã¼,Å¬·¡½º,º¯¼ö)¸¦ ÀÏÁ¤·® ÇÒ´ç ÈÄ ³ª´²¾´´Ù.
-
-	- »ç¿ë¹ı.
-
-	64 bit ±âÁØ ¼³°è. 32bit¿¡¼­´Â Á¤»ó ÀÛµ¿ÇÏÁö ¾ÊÀ½
-
-	procademy::CLockFreeMemoryPool<DATA> MemPool(300, FALSE);
-	DATA *pData = MemPool.Alloc();
-
-	pData »ç¿ë
-
-	MemPool.Free(pData);
-
-				
-----------------------------------------------------------------*/
 #ifndef  __LOCKFREE_MEMORY_POOL_H__
 #define  __LOCKFREE_MEMORY_POOL_H__
 //#include <Windows.h>
@@ -38,20 +18,20 @@ public:
 		eALLOC_PAGE_RESERVE_SIZE = 65536
 	};
 
-	// ¿ÀºêÁ§Æ® ºí·°
+	// ì˜¤ë¸Œì íŠ¸ ë¸”ëŸ­
 	struct alignas(64) st_BLOCK_NODE
 	{
-		LONG64 objectCode;						// ¿ÀºêÁ§Æ® °Ë»ç ÄÚµå
-		DATA data;							// ¿ÀºêÁ§Æ® - ½ÇÁ¦ÀûÀ¸·Î »ç¿ëÀÚ¿¡°Ô ³Ñ°ÜÁà¾ßÇÏ´Â ÁÖ¼Ò
-		LONG64 overflow;						// ³ëµå ¿À¹öÇÃ·Î¿ì °Ë»ç ¿ëµµ
-		st_BLOCK_NODE*			next;		// ´ÙÀ½ ³ëµå Æ÷ÀÎÅÍ
+		LONG64 objectCode;						// ì˜¤ë¸Œì íŠ¸ ê²€ì‚¬ ì½”ë“œ
+		DATA data;							// ì˜¤ë¸Œì íŠ¸ - ì‹¤ì œì ìœ¼ë¡œ ì‚¬ìš©ìì—ê²Œ ë„˜ê²¨ì¤˜ì•¼í•˜ëŠ” ì£¼ì†Œ
+		LONG64 overflow;						// ë…¸ë“œ ì˜¤ë²„í”Œë¡œìš° ê²€ì‚¬ ìš©ë„
+		st_BLOCK_NODE*			next;		// ë‹¤ìŒ ë…¸ë“œ í¬ì¸í„°
 	};
 
 	//////////////////////////////////////////////////////////////////////////
-	// »ı¼ºÀÚ, ÆÄ±«ÀÚ.
+	// ìƒì„±ì, íŒŒê´´ì.
 	//
-	// Parameters:	(int) ÃÊ±â ºí·° °³¼ö, (bool)¸Å Alloc È£Ãâ ½Ã ¿ÀºêÁ§Æ® »ı¼ºÀÚ È£Ãâ ¿©ºÎ
-	//				(bool) Alloc ½Ã »ı¼ºÀÚ / Free ½Ã ÆÄ±«ÀÚ È£Ãâ ¿©ºÎ
+	// Parameters:	(int) ì´ˆê¸° ë¸”ëŸ­ ê°œìˆ˜, (bool)ë§¤ Alloc í˜¸ì¶œ ì‹œ ì˜¤ë¸Œì íŠ¸ ìƒì„±ì í˜¸ì¶œ ì—¬ë¶€
+	//				(bool) Alloc ì‹œ ìƒì„±ì / Free ì‹œ íŒŒê´´ì í˜¸ì¶œ ì—¬ë¶€
 	// Return:
 	//////////////////////////////////////////////////////////////////////////
 	CLockFreeMemoryPool(bool bPlacementNew = false);
@@ -59,27 +39,27 @@ public:
 
 
 	//////////////////////////////////////////////////////////////////////////
-	// ºí·° ÇÏ³ª¸¦ ÇÒ´ç¹Ş´Â´Ù.  
+	// ë¸”ëŸ­ í•˜ë‚˜ë¥¼ í• ë‹¹ë°›ëŠ”ë‹¤.  
 	//
-	// Parameters: ¾øÀ½.
-	// Return: (DATA *) µ¥ÀÌÅ¸ ºí·° Æ÷ÀÎÅÍ.
+	// Parameters: ì—†ìŒ.
+	// Return: (DATA *) ë°ì´íƒ€ ë¸”ëŸ­ í¬ì¸í„°.
 	//////////////////////////////////////////////////////////////////////////
 	DATA	*Alloc(void);
 
 	//////////////////////////////////////////////////////////////////////////
-	// »ç¿ëÁßÀÌ´ø ºí·°À» ÇØÁ¦ÇÑ´Ù.
+	// ì‚¬ìš©ì¤‘ì´ë˜ ë¸”ëŸ­ì„ í•´ì œí•œë‹¤.
 	//
-	// Parameters: (DATA *) ºí·° Æ÷ÀÎÅÍ.
+	// Parameters: (DATA *) ë¸”ëŸ­ í¬ì¸í„°.
 	// Return: (BOOL) TRUE, FALSE.
 	//////////////////////////////////////////////////////////////////////////
 	bool	Free(DATA *pData);
 
 
 	//////////////////////////////////////////////////////////////////////////
-	// ÇöÀç È®º¸ µÈ ºí·° °³¼ö¸¦ ¾ò´Â´Ù. (¸Ş¸ğ¸®Ç® ³»ºÎÀÇ ÀüÃ¼ °³¼ö)
+	// í˜„ì¬ í™•ë³´ ëœ ë¸”ëŸ­ ê°œìˆ˜ë¥¼ ì–»ëŠ”ë‹¤. (ë©”ëª¨ë¦¬í’€ ë‚´ë¶€ì˜ ì „ì²´ ê°œìˆ˜)
 	//
-	// Parameters: ¾øÀ½.
-	// Return: (LONG64) ¸Ş¸ğ¸® Ç® ³»ºÎ ÀüÃ¼ °³¼ö
+	// Parameters: ì—†ìŒ.
+	// Return: (LONG64) ë©”ëª¨ë¦¬ í’€ ë‚´ë¶€ ì „ì²´ ê°œìˆ˜
 	//////////////////////////////////////////////////////////////////////////
 #ifndef dfLOCKFREE_MEMORYPOOL_BENCHMARKING
 	LONG64		GetCapacityCount(void) { return _ldUseSize; }
@@ -90,20 +70,20 @@ public:
 #endif
 
 	//////////////////////////////////////////////////////////////////////////
-	// ÃÖ´ë ÇÒ´ç ºí·° °³¼ö¸¦ Áõ°¡½ÃÅ²´Ù.
+	// ìµœëŒ€ í• ë‹¹ ë¸”ëŸ­ ê°œìˆ˜ë¥¼ ì¦ê°€ì‹œí‚¨ë‹¤.
 	//
-	// Parameters: ¾øÀ½
-	// Return: ¾øÀ½
+	// Parameters: ì—†ìŒ
+	// Return: ì—†ìŒ
 	//////////////////////////////////////////////////////////////////////////
 	DATA*		Resize(void);
 
 
 private:
-	// ½ºÅÃ ¹æ½ÄÀ¸·Î ¹İÈ¯µÈ (¹Ì»ç¿ë) ¿ÀºêÁ§Æ® ºí·°À» °ü¸®.
-	bool alignas(64)	_bPlacementNew;	// Alloc, Free ½Ã ¸Å¹ø »ı¼ºÀÚ ¹× ¼Ò¸êÀÚ È£Ãâ ¿©ºÎ
-	int					_iAddrDistance;	// Node¿Í Node ºí·¯ÀÇ ÁÖ¼Ò Â÷ÀÌ °ª(°Å¸®)
+	// ìŠ¤íƒ ë°©ì‹ìœ¼ë¡œ ë°˜í™˜ëœ (ë¯¸ì‚¬ìš©) ì˜¤ë¸Œì íŠ¸ ë¸”ëŸ­ì„ ê´€ë¦¬.
+	bool alignas(64)	_bPlacementNew;	// Alloc, Free ì‹œ ë§¤ë²ˆ ìƒì„±ì ë° ì†Œë©¸ì í˜¸ì¶œ ì—¬ë¶€
+	int					_iAddrDistance;	// Nodeì™€ Node ë¸”ëŸ¬ì˜ ì£¼ì†Œ ì°¨ì´ ê°’(ê±°ë¦¬)
 
-	// TLS °ü·Ã ¿ä¼Ò
+	// TLS ê´€ë ¨ ìš”ì†Œ
 	inline static LONG64	_bIsTlsNumAlloc;
 	inline static DWORD		_dwPoolTlsNum;
 	inline static DWORD		_dwAllocAddrTlsNum;
@@ -113,15 +93,15 @@ private:
 	int						_PageCommitCount;
 	LONG64					_MemCountInPage;
 
-	st_BLOCK_NODE* alignas(64) _pFreeNode;		// ½ºÅÃ Top ¿ÀºêÁ§Æ® ºí·°
+	st_BLOCK_NODE* alignas(64) _pFreeNode;		// ìŠ¤íƒ Top ì˜¤ë¸Œì íŠ¸ ë¸”ëŸ­
 
 #ifndef dfLOCKFREE_MEMORYPOOL_BENCHMARKING
-	LONG64 alignas(64)	_ldUseSize;			// ÇöÀç »ç¿ëÁßÀÎ ºí·° °³¼ö
-	LONG64 alignas(64)	_TotalMemoryPool;	// ÀüÃ¼ ºí·° °³¼ö
+	LONG64 alignas(64)	_ldUseSize;			// í˜„ì¬ ì‚¬ìš©ì¤‘ì¸ ë¸”ëŸ­ ê°œìˆ˜
+	LONG64 alignas(64)	_TotalMemoryPool;	// ì „ì²´ ë¸”ëŸ­ ê°œìˆ˜
 
 
-	inline static LONG64 alignas(64)	_TotalUseSize;	// ÀüÃ¼ ºí·° °³¼ö
-	inline static LONG64 alignas(64)	_TotalPoolSize;	// ÀüÃ¼ ºí·° °³¼ö
+	inline static LONG64 alignas(64)	_TotalUseSize;	// ì „ì²´ ë¸”ëŸ­ ê°œìˆ˜
+	inline static LONG64 alignas(64)	_TotalPoolSize;	// ì „ì²´ ë¸”ëŸ­ ê°œìˆ˜
 #endif
 };
 
@@ -135,7 +115,7 @@ CLockFreeMemoryPool<DATA>::CLockFreeMemoryPool(bool bPlacementNew)
 
 	if (0 == InterlockedExchange64(&_bIsTlsNumAlloc, true))
 	{
-		// TLS ¹øÈ£ ÃÊ±âÈ­
+		// TLS ë²ˆí˜¸ ì´ˆê¸°í™”
 		_dwPoolTlsNum = TlsAlloc();
 		_dwAllocAddrTlsNum = TlsAlloc();
 		_dwAllocSizeTlsNum = TlsAlloc();
@@ -143,18 +123,18 @@ CLockFreeMemoryPool<DATA>::CLockFreeMemoryPool(bool bPlacementNew)
 		_dwSpareResizeAddrTlsNum = TlsAlloc();
 	}
 	
-	// ÆäÀÌÁö ³» ³ëµå °³¼ö
+	// í˜ì´ì§€ ë‚´ ë…¸ë“œ ê°œìˆ˜
 	_MemCountInPage = eSYSTEM_PAGE_SIZE / sizeof(st_BLOCK_NODE);
 	if (0 == _MemCountInPage)
 	{
-		// ³ëµå°¡ ´ÜÀÏ ÆäÀÌÁöÀÇ Å©±âº¸´Ù Å« °æ¿ìÀÌ´Ù.
-		// ¿ªÀ¸·Î ³ëµå¸¦ ÆäÀÌÁö Å©±â·Î ³ª´©¾î ÇÒ´çÇÒ ÆäÀÌÁöÀÇ °³¼ö¸¦ ±¸ÇÔ
+		// ë…¸ë“œê°€ ë‹¨ì¼ í˜ì´ì§€ì˜ í¬ê¸°ë³´ë‹¤ í° ê²½ìš°ì´ë‹¤.
+		// ì—­ìœ¼ë¡œ ë…¸ë“œë¥¼ í˜ì´ì§€ í¬ê¸°ë¡œ ë‚˜ëˆ„ì–´ í• ë‹¹í•  í˜ì´ì§€ì˜ ê°œìˆ˜ë¥¼ êµ¬í•¨
 		_MemCountInPage = 1 + sizeof(st_BLOCK_NODE) / eSYSTEM_PAGE_SIZE;
 		_PageCommitCount = (int)_MemCountInPage;
 	}
 	else
 	{
-		// ÇÑ ¹ø¿¡ Ä¿¹ÔÇÒ ÆäÀÌÁö °³¼ö
+		// í•œ ë²ˆì— ì»¤ë°‹í•  í˜ì´ì§€ ê°œìˆ˜
 		_PageCommitCount = 1;
 	}
 
@@ -194,7 +174,7 @@ DATA* CLockFreeMemoryPool<DATA>::Alloc(void)
 			break;
 		}
 
-		// ABA ¹®Á¦¸¦ ÇØ°áÇÏ±â À§ÇÏ¿© Top ÁÖ¼Ò °ª ºó Ä­¿¡ Count °ªÀ» °è»ê 
+		// ABA ë¬¸ì œë¥¼ í•´ê²°í•˜ê¸° ìœ„í•˜ì—¬ Top ì£¼ì†Œ ê°’ ë¹ˆ ì¹¸ì— Count ê°’ì„ ê³„ì‚° 
 		st_BLOCK_NODE* next = (st_BLOCK_NODE*)((((ULONG64)pTempNode + dfLOCKFREE_MEMORYPOOL_MASKING_COUNT_ADD) & dfLOCKFREE_MEMORYPOOL_MASKING_COUNT) | (ULONG64)(pFreeNode->next));
 
 		if (pTempNode == (st_BLOCK_NODE*)InterlockedCompareExchange((unsigned long long*) & _pFreeNode, (unsigned long long)next, (unsigned long long)pTempNode))
@@ -222,14 +202,14 @@ bool CLockFreeMemoryPool<DATA>::Free(DATA* pData)
 	st_BLOCK_NODE* pNode = (st_BLOCK_NODE*)((int*)pData - _iAddrDistance);
 
 #ifndef dfLOCKFREE_MEMORYPOOL_BENCHMARKING
-	// ¿ÀºêÁ§Æ® ºí·° °Ë»ç
+	// ì˜¤ë¸Œì íŠ¸ ë¸”ëŸ­ ê²€ì‚¬
 	if (pNode->objectCode != (LONG64)pNode)
 		return false;
 
 	if (pNode->overflow != (LONG64)pNode)
 		return false;
 
-	// ºí·° ½ºÅÃ Á¤¸®
+	// ë¸”ëŸ­ ìŠ¤íƒ ì •ë¦¬
 	if (_bPlacementNew == true)
 		pData->~DATA();
 #endif
@@ -241,7 +221,7 @@ bool CLockFreeMemoryPool<DATA>::Free(DATA* pData)
 
 		pNode->next = pFreeNode;
 
-		// ABA ¹®Á¦¸¦ ÇØ°áÇÏ±â À§ÇÏ¿© Top ÁÖ¼Ò °ª ºó Ä­¿¡ Count °ªÀ» °è»ê
+		// ABA ë¬¸ì œë¥¼ í•´ê²°í•˜ê¸° ìœ„í•˜ì—¬ Top ì£¼ì†Œ ê°’ ë¹ˆ ì¹¸ì— Count ê°’ì„ ê³„ì‚°
 		st_BLOCK_NODE* pNewTop = (st_BLOCK_NODE*)((((ULONG64)pTempNode + dfLOCKFREE_MEMORYPOOL_MASKING_COUNT_ADD) & dfLOCKFREE_MEMORYPOOL_MASKING_COUNT) | (ULONG64)(pNode));
 
 		if (pTempNode == (st_BLOCK_NODE*)InterlockedCompareExchange((unsigned long long*)&_pFreeNode, (unsigned long long)pNewTop, (unsigned long long)pTempNode))
@@ -260,7 +240,7 @@ bool CLockFreeMemoryPool<DATA>::Free(DATA* pData)
 template<class DATA>
 DATA* CLockFreeMemoryPool<DATA>::Resize(void)
 {
-	// ¿ÀºêÁ§Æ® ºí·° ÇÒ´ç
+	// ì˜¤ë¸Œì íŠ¸ ë¸”ëŸ­ í• ë‹¹
 	LONG64 dlSpareResizeAddrCount = (LONG64)TlsGetValue(_dwSpareResizeAddrTlsNum);
 	
 	if (dlSpareResizeAddrCount > 0)
@@ -269,7 +249,7 @@ DATA* CLockFreeMemoryPool<DATA>::Resize(void)
 
 		st_BLOCK_NODE* pNewBlock = (st_BLOCK_NODE*)TlsGetValue(_dwResizeAddrTlsNum);
 
-		// ¸Ş¸ğ¸®Ç® Ãß°¡ ÇÒ´ç ÁÖ¼Ò ¾÷µ¥ÀÌÆ®
+		// ë©”ëª¨ë¦¬í’€ ì¶”ê°€ í• ë‹¹ ì£¼ì†Œ ì—…ë°ì´íŠ¸
 		LONG64 NextResizeBlock = (LONG64)(pNewBlock->next);
 		TlsSetValue(_dwResizeAddrTlsNum, (void*)NextResizeBlock);
 
@@ -280,12 +260,12 @@ DATA* CLockFreeMemoryPool<DATA>::Resize(void)
 	int* pBaseAddr = (int*)TlsGetValue(_dwAllocAddrTlsNum);
 	int* pBlockAddrBase = pBaseAddr;
 
-	// µ¿Àû ¸Ş¸ğ¸® ¸®Àúºê ¹× Ä¿¹Ô
+	// ë™ì  ë©”ëª¨ë¦¬ ë¦¬ì €ë¸Œ ë° ì»¤ë°‹
 	if ((NULL == pBaseAddr)
 		|| ((LONG64)eALLOC_PAGE_RESERVE_SIZE - ldAllocSize < (LONG64)(sizeof(st_BLOCK_NODE) * _MemCountInPage)))
 	{
-		// Condition 1: ÃÖÃÊ ¸Ş¸ğ¸® ¿¹¾à
-		// Condition 2: ¿¹¾àÇÑ 64KB °ø°£ÀÌ ÇÒ´çÅ©±â¸¸Å­ÀÇ °ø°£ÀÌ ¾ø´Â °æ¿ì
+		// Condition 1: ìµœì´ˆ ë©”ëª¨ë¦¬ ì˜ˆì•½
+		// Condition 2: ì˜ˆì•½í•œ 64KB ê³µê°„ì´ í• ë‹¹í¬ê¸°ë§Œí¼ì˜ ê³µê°„ì´ ì—†ëŠ” ê²½ìš°
 
 		pBlockAddrBase = (int*)VirtualAlloc(NULL, eALLOC_PAGE_RESERVE_SIZE, MEM_RESERVE, PAGE_NOACCESS);
 		pBaseAddr = pBlockAddrBase;
@@ -294,8 +274,8 @@ DATA* CLockFreeMemoryPool<DATA>::Resize(void)
 
 	if ((NULL == pBlockAddrBase) || (ERROR_INVALID_ADDRESS == (LONG64)pBlockAddrBase))
 	{
-		// Condition 1: ¸Ş¸ğ¸® ÇÒ´ç ½ÇÆĞ
-		// Condition 2: À¯È¿ÇÏÁö ¾ÊÀº °ø°£À» ¿¹¾à ¿äÃ»ÇÑ °æ¿ì
+		// Condition 1: ë©”ëª¨ë¦¬ í• ë‹¹ ì‹¤íŒ¨
+		// Condition 2: ìœ íš¨í•˜ì§€ ì•Šì€ ê³µê°„ì„ ì˜ˆì•½ ìš”ì²­í•œ ê²½ìš°
 		int* exit = NULL;
 		*exit = 0;
 		return NULL;
@@ -303,22 +283,22 @@ DATA* CLockFreeMemoryPool<DATA>::Resize(void)
 
 	pBlockAddrBase = (int*)VirtualAlloc(pBaseAddr, sizeof(st_BLOCK_NODE) * _MemCountInPage, MEM_COMMIT, PAGE_READWRITE);
 
-	// ÇÒ´çµÈ ÆäÀÌÁö »çÀÌÁî ±¸ÇÏ±â
+	// í• ë‹¹ëœ í˜ì´ì§€ ì‚¬ì´ì¦ˆ êµ¬í•˜ê¸°
 	pBaseAddr = pBaseAddr + (eSYSTEM_PAGE_SIZE / sizeof(int)) * _PageCommitCount;
 	ldAllocSize += _PageCommitCount * eSYSTEM_PAGE_SIZE;
 
-	// TLS °»½Å
+	// TLS ê°±ì‹ 
 	TlsSetValue(_dwAllocAddrTlsNum, pBaseAddr);
 	TlsSetValue(_dwAllocSizeTlsNum, (void*)ldAllocSize);
 	TlsSetValue(_dwSpareResizeAddrTlsNum, (void*)(_MemCountInPage - 1));
 
-	// ¿ÀºêÁ§Æ® ºí·° ÇÒ´ç
+	// ì˜¤ë¸Œì íŠ¸ ë¸”ëŸ­ í• ë‹¹
 	st_BLOCK_NODE* pAllocBlock = (st_BLOCK_NODE*)pBlockAddrBase;
 	st_BLOCK_NODE* pBlock = pAllocBlock + 1;
 
 #ifndef dfLOCKFREE_MEMORYPOOL_BENCHMARKING
 	//--------------------------------------
-	// ¸Ş¸ğ¸® ÃÊ±âÈ­
+	// ë©”ëª¨ë¦¬ ì´ˆê¸°í™”
 	//--------------------------------------
 	pAllocBlock->objectCode = (LONG64)pAllocBlock;
 	pAllocBlock->next = nullptr;
@@ -350,7 +330,7 @@ DATA* CLockFreeMemoryPool<DATA>::Resize(void)
 		pBlock->next = nullptr;
 		pBlock->overflow = (LONG64)pBlock;
 
-		// placement new·Î »ı¼ºÀÚ È£Ãâ
+		// placement newë¡œ ìƒì„±ì í˜¸ì¶œ
 		new (&pBlock->data) DATA;
 
 		for (int cnt = 2; cnt < _MemCountInPage; cnt++)
@@ -369,17 +349,17 @@ DATA* CLockFreeMemoryPool<DATA>::Resize(void)
 	}
 #else
 	//--------------------------------------
-	// ¸Ş¸ğ¸® ÃÊ±âÈ­
+	// ë©”ëª¨ë¦¬ ì´ˆê¸°í™”
 	//--------------------------------------
 
-	// ÇÒ´ç ¸Ş¸ğ¸®
+	// í• ë‹¹ ë©”ëª¨ë¦¬
 	pAllocBlock->objectCode = (LONG64)pAllocBlock;
 	pAllocBlock->next = nullptr;
 	pAllocBlock->overflow = (LONG64)pAllocBlock;
 
 	new (&pAllocBlock->data) DATA;
 
-	// ¸Ş¸ğ¸®Ç® ½ºÅÃ
+	// ë©”ëª¨ë¦¬í’€ ìŠ¤íƒ
 	pBlock->objectCode = (LONG64)pBlock;
 	pBlock->next = nullptr;
 	pBlock->overflow = (LONG64)pBlock;
@@ -402,7 +382,7 @@ DATA* CLockFreeMemoryPool<DATA>::Resize(void)
 	}
 #endif
 	
-	// ¸Ş¸ğ¸®Ç® Ãß°¡ ÇÒ´ç ÁÖ¼Ò ¾÷µ¥ÀÌÆ®
+	// ë©”ëª¨ë¦¬í’€ ì¶”ê°€ í• ë‹¹ ì£¼ì†Œ ì—…ë°ì´íŠ¸
 	TlsSetValue(_dwResizeAddrTlsNum, pBlock);
 
 #ifndef dfLOCKFREE_MEMORYPOOL_BENCHMARKING
