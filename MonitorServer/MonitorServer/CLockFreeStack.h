@@ -1,21 +1,3 @@
-/*---------------------------------------------------------------
-
-	procademy MemoryPool.
-
-	¸Þ¸ð¸® Ç® Å¬·¡½º (¿ÀºêÁ§Æ® Ç® / ÇÁ¸®¸®½ºÆ®)
-	Æ¯Á¤ µ¥ÀÌÅ¸(±¸Á¶Ã¼,Å¬·¡½º,º¯¼ö)¸¦ ÀÏÁ¤·® ÇÒ´ç ÈÄ ³ª´²¾´´Ù.
-
-	- »ç¿ë¹ý.
-
-	procademy::CLockFreeStack<DATA> MemPool(300, FALSE);
-	DATA *pData = MemPool.Alloc();
-
-	pData »ç¿ë
-
-	MemPool.Free(pData);
-
-
-----------------------------------------------------------------*/
 #ifndef  __LOCKFREE_STACK_H__
 #define  __LOCKFREE_STACK_H__
 //#include <Windows.h>
@@ -32,8 +14,8 @@ public:
 	};
 
 private:
-	inline static CLockFreeMemoryPool<Node> _MemmoryPool;	// °°Àº Å¸ÀÔÀÇ ¶ôÇÁ¸® ½ºÅÃµéÀº ¸Þ¸ð¸®Ç®À» °øÀ¯
-	Node*			_pFreeNode;								// ½ºÅÃ Top ¿ÀºêÁ§Æ® ºí·°
+	inline static CLockFreeMemoryPool<Node> _MemmoryPool;	// ê°™ì€ íƒ€ìž…ì˜ ë½í”„ë¦¬ ìŠ¤íƒë“¤ì€ ë©”ëª¨ë¦¬í’€ì„ ê³µìœ 
+	Node*			_pFreeNode;								// ìŠ¤íƒ Top ì˜¤ë¸Œì íŠ¸ ë¸”ëŸ­
 
 public:
 
@@ -44,7 +26,7 @@ public:
 
 	~CLockFreeStack()
 	{
-		// Ã³¸® º¸·ù
+		// ì²˜ë¦¬ ë³´ë¥˜
 		Node* pDeleteNode;
 		Node* pFreeNode = (Node*)((ULONG64)_pFreeNode & dfLOCKFREE_MEMORYPOOL_MASKING_ADDR);
 
@@ -57,10 +39,10 @@ public:
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	// Stack ³»ºÎ¿¡ ÀúÀåµÈ data °³¼ö ¹ÝÈ¯
+	// Stack ë‚´ë¶€ì— ì €ìž¥ëœ data ê°œìˆ˜ ë°˜í™˜
 	//
-	// Parameters: ¾øÀ½.
-	// Return: (int) data °³¼ö
+	// Parameters: ì—†ìŒ.
+	// Return: (int) data ê°œìˆ˜
 	//////////////////////////////////////////////////////////////////////////
 
 	void Push(T data)
@@ -77,7 +59,7 @@ public:
 
 			pNode->next = pFreeNode;
 
-			// ABA ¹®Á¦¸¦ ÇØ°áÇÏ±â À§ÇÏ¿© Top ÁÖ¼Ò °ª ºó Ä­¿¡ Count °ªÀ» °è»ê
+			// ABA ë¬¸ì œë¥¼ í•´ê²°í•˜ê¸° ìœ„í•˜ì—¬ Top ì£¼ì†Œ ê°’ ë¹ˆ ì¹¸ì— Count ê°’ì„ ê³„ì‚°
 			Node* pNewTop = (Node*)((((ULONG64)pTempNode + dfLOCKFREE_MEMORYPOOL_MASKING_COUNT_ADD) & dfLOCKFREE_MEMORYPOOL_MASKING_COUNT) | (ULONG64)(pNode));
 
 			if (pTempNode == (Node*)InterlockedCompareExchange((unsigned long long*) & _pFreeNode, (unsigned long long)pNewTop, (unsigned long long)pTempNode))
@@ -99,7 +81,7 @@ public:
 				return 0;
 			}
 
-			// ABA ¹®Á¦¸¦ ÇØ°áÇÏ±â À§ÇÏ¿© Top ÁÖ¼Ò °ª ºó Ä­¿¡ Count °ªÀ» °è»ê 
+			// ABA ë¬¸ì œë¥¼ í•´ê²°í•˜ê¸° ìœ„í•˜ì—¬ Top ì£¼ì†Œ ê°’ ë¹ˆ ì¹¸ì— Count ê°’ì„ ê³„ì‚° 
 			Node* next = (Node*)((((ULONG64)pTempNode + dfLOCKFREE_MEMORYPOOL_MASKING_COUNT_ADD) & dfLOCKFREE_MEMORYPOOL_MASKING_COUNT) | (ULONG64)(pFreeNode->next));
 
 			if (pTempNode == (Node*)InterlockedCompareExchange((unsigned long long*) & _pFreeNode, (unsigned long long)next, (unsigned long long)pTempNode))
